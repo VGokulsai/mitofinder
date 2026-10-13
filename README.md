@@ -16,6 +16,7 @@ A dot counts as found if it lands within 75 nm of an expert's centre. F1 combine
 | + brightness matched | same | 12% | 82% | 0.21 |
 | + zoom matched (8 nm to 5 nm) | same | 30% | 52% | 0.38 |
 | + same slice x3 instead of neighbours | same | 44% | 41% | 0.42 |
+| v1 on placenta, no teaching (cutoff 0.7 from EPFL) | EMPIAR-10967, 9 pictures, 14 centres clicked by Gokul | 7% (1 of 14) | 1% | 0.02 |
 
 The human-brain rows come from a laptop trial; the full run with fine-tuning is notebook 03 on a GPU.
 
