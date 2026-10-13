@@ -3,3 +3,4 @@ data/
 __pycache__/
 .ipynb_checkpoints/
 checkpoints/
+try/*_mitofinder.png
