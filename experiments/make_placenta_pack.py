@@ -1,5 +1,5 @@
 """Zips the placenta pictures, your clicks and mitofinder_v1h.pt into placenta_pack.zip for notebook 04.
-Run: py -3 experiments/make_placenta_pack.py [output.zip]
+Run: py -3 experiments/make_placenta_pack.py [crops folder name, default placenta39_crops] [output.zip]
 """
 import json
 import os
@@ -7,8 +7,8 @@ import sys
 import zipfile
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "placenta_pack.zip")
-crops = os.path.join(ROOT, "data", "placenta_crops")
+crops = os.path.join(ROOT, "data", sys.argv[1] if len(sys.argv) > 1 else "placenta39_crops")
+out = sys.argv[2] if len(sys.argv) > 2 else os.path.join(ROOT, "placenta_pack.zip")
 
 for group in ("test", "teach"):
     answers = os.path.join(crops, group, "answers.json")
