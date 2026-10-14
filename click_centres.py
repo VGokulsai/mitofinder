@@ -67,9 +67,13 @@ def draw(keep_view=False):
     dots = answers.get(name, [])
     if dots:
         ax.scatter([d[1] for d in dots], [d[0] for d in dots], s=90, c="red", marker="+", linewidths=2)
+    todo = suggestions.get(name, [])
+    if todo:
+        ax.scatter([d[1] for d in todo], [d[0] for d in todo], s=900, facecolors="none", edgecolors="yellow", linewidths=4)
     done = sum(1 for p in pictures if p in answers)
-    ax.set_title(f"{name}  ({state['i'] + 1} of {len(pictures)})  |  {len(dots)} dots here  |  {done} pictures started\n"
-                 "left click = dot, right click = remove, n/p = next/previous, z = zoom tool, h = whole picture")
+    extra = f"  |  {len(todo)} YELLOW to check" if todo else ""
+    ax.set_title(f"{name}  ({state['i'] + 1} of {len(pictures)})  |  {len(dots)} dots here{extra}  |  {done} pictures started\n"
+                 "left click = dot / accept yellow, right click = remove / reject, a = accept all yellow here, n/p, z = zoom, h")
     ax.axis("off")
     if view:
         ax.set_xlim(view[0]); ax.set_ylim(view[1])
