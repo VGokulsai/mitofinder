@@ -8,6 +8,12 @@
   z            zoom tool on or off (the magnifier in the toolbar does the same); h = see the whole picture again
   q            quit
 
+If the folder has suggestions.json (dots another AI proposed), they show as yellow circles:
+  left click on a yellow circle   accept it (it becomes your red +)
+  right click on a yellow circle  reject it
+  a                               accept every yellow circle left on this picture (after you have looked at them)
+A suggestion only counts once you accept it.
+
 Every click is saved straight away to answers.json in the same folder, so you can stop and come back.
 """
 import json
@@ -28,6 +34,9 @@ if not pictures:
     sys.exit(f"no .png pictures in {folder}")
 save_path = os.path.join(folder, "answers.json")
 answers = json.load(open(save_path)) if os.path.exists(save_path) else {}
+suggest_path = os.path.join(folder, "suggestions.json")
+suggestions = json.load(open(suggest_path)) if os.path.exists(suggest_path) else {}
+NEAR = 20               # pixels: a click this close to a yellow circle accepts it
 state = {"i": 0}
 
 fig, ax = plt.subplots(figsize=(11, 11))
@@ -37,6 +46,17 @@ fig.canvas.manager.set_window_title("MitoFinder: click the centres")
 def save():
     with open(save_path, "w") as f:
         json.dump(answers, f, indent=1)
+    if suggestions:
+        with open(suggest_path, "w") as f:
+            json.dump(suggestions, f, indent=1)
+
+
+def nearest(dots, y, x):
+    if not dots:
+        return None, float("inf")
+    d = [np.hypot(a - y, b - x) for a, b in dots]
+    i = int(np.argmin(d))
+    return i, d[i]
 
 
 def draw(keep_view=False):
@@ -62,11 +82,19 @@ def on_click(event):
         return
     name = pictures[state["i"]]
     dots = answers.setdefault(name, [])
+    todo = suggestions.get(name, [])
+    si, sd = nearest(todo, event.ydata, event.xdata)
     if event.button == 1:
-        dots.append([round(event.ydata, 1), round(event.xdata, 1)])
-    elif event.button == 3 and dots:
-        d = [np.hypot(y - event.ydata, x - event.xdata) for y, x in dots]
-        dots.pop(int(np.argmin(d)))
+        if si is not None and sd <= NEAR:
+            dots.append(todo.pop(si))                     # accept the suggestion
+        else:
+            dots.append([round(event.ydata, 1), round(event.xdata, 1)])
+    elif event.button == 3:
+        di, dd = nearest(dots, event.ydata, event.xdata)
+        if si is not None and sd <= dd:
+            todo.pop(si)                                  # reject the suggestion
+        elif di is not None:
+            dots.pop(di)
     save()
     draw(keep_view=True)
 
@@ -78,6 +106,11 @@ def on_key(event):
         state["i"] = max(state["i"] - 1, 0); draw()
     elif event.key == "z":
         fig.canvas.toolbar.zoom()
+    elif event.key == "a":
+        name = pictures[state["i"]]
+        answers.setdefault(name, []).extend(suggestions.get(name, []))
+        suggestions[name] = []
+        save(); draw(keep_view=True)
     elif event.key == "q":
         plt.close(fig)
 
