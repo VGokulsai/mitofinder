@@ -17,10 +17,10 @@ md("""
 # MitoFinder 04: placenta, taught from your clicks
 
 Nobody has drawn outlines around placenta mitochondria, so this time **your clicks are the answer sheet**:
-- **teaching pictures** (10): MitoFinder practises on 8 of them; the other 2 are kept aside to choose its cutoff
-- **test pictures** (9): scored once at the very end, never seen while learning or choosing
+- **teaching pictures** (12): MitoFinder practises on most of them; the last slice's pictures are kept aside to choose its cutoff
+- **test pictures** (12): scored once at the very end, never seen while learning or choosing
 
-As it is, MitoFinder scores F1 0.02 on your test pictures (it found 1 of your 14 mitochondria). From notebook 3 we know teaching works on new tissue (human brain: 0.41 -> 0.58) **if the cutoff is chosen again afterwards**. Let's see if it works for placenta.
+As it is, MitoFinder v1 scores F1 0.04 on your test pictures (it found 4 of your 28 mitochondria). From notebook 3 we know teaching works on new tissue (human brain: 0.41 -> 0.58) **if the cutoff is chosen again afterwards**. Let's see if it works for placenta.
 
 **Before you start:** Runtime -> Change runtime type -> **T4 GPU** -> Save, then **Disconnect and delete runtime** and connect again. Have `placenta_pack.zip` ready (it is in your `mitofinder` folder).
 """)
@@ -144,11 +144,12 @@ def choose_rule(model, pics, dots):
 md("""
 ## 3. Split the teaching pictures: 8 to practise on, 2 kept aside to choose the cutoff
 
-The kept-aside pair is the last slice (z300), the one farthest from the others.
+The kept-aside pictures are the last teaching slice, the one farthest along the stack.
 """)
 
 code("""
-aside = [n for n in teach_pics if n.startswith("z300")]
+last = max(int(n[1:].split("_")[0]) for n in teach_pics)            # the teaching slice farthest along the stack
+aside = [n for n in teach_pics if n.startswith(f"z{last}_")]
 practice = [n for n in teach_pics if n not in aside]
 aside_pics, aside_dots = {n: teach_pics[n] for n in aside}, {n: teach_dots[n] for n in aside}
 print("practise on:", practice)

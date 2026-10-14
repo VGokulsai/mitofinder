@@ -15,7 +15,7 @@ from PIL import Image
 from dots_fix import UNet, blobs, match
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-TEST = os.path.join(ROOT, "data", "placenta_crops", "test")
+TEST = os.path.join(ROOT, "data", os.environ.get("CROPS", "placenta39_crops"), "test")
 
 
 def main():
