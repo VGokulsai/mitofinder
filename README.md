@@ -19,6 +19,7 @@ A dot counts as found if it lands within 75 nm of an expert's centre. F1 combine
 | v1, settings chosen on a separate human block (slices 192-255) | MitoEM-H test block, all 50 slices | 42% | 40% | 0.41 |
 | **v1h: taught on 64 human slices**, settings chosen the same way | same | 62% | 55% | **0.58** |
 | v1 on placenta, no teaching (cutoff 0.7 from EPFL) | EMPIAR-10967, 9 pictures, 14 centres clicked by Gokul | 7% (1 of 14) | 1% | 0.02 |
+| v1h on placenta, no placenta teaching (cutoff from human brain) | same | 50% (7 of 14) | 16% | 0.25 |
 
 The human-brain rows come from a laptop trial; the full run with fine-tuning is notebook 03 on a GPU.
 
@@ -26,6 +27,7 @@ What went wrong, and what it taught:
 - v1 put several dots along long, tube-shaped mitochondria. Raising the cutoff from 0.4 to 0.7 fixed most of it; counting one dot per glowing blob did no better.
 - Stretching image contrast made v1 find nothing at all. Every picture is now shifted to the brightness it learned on.
 - On human tissue the zoom and the slice spacing (30 nm, not 5 nm) mattered as much as the tissue itself.
+- Teaching on human brain also helped on placenta, which it never saw: 0.02 -> 0.25. Only 14 clicked centres, so that number is rough.
 - Teaching looked useless in notebook 03 (F1 0.38) only because it kept v1's cutoff. Re-chosen on a separate block, the taught model scores 0.58. After teaching, always re-choose the cutoff.
 
 ## Use it
