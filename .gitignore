@@ -3,5 +3,7 @@ data/
 __pycache__/
 .ipynb_checkpoints/
 checkpoints/
-try/*_mitofinder.png
+try/*.png
+/brain_slice_*.png
+talk_post_draft.txt
 placenta_pack.zip
